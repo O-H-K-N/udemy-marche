@@ -18,6 +18,10 @@ class RouteServiceProvider extends ServiceProvider
      * @var string
      */
     public const HOME = '/dashboard';
+    // オーナー用
+    public const OWNER_HOME = '/owner/dashboard';
+    // 管理者用
+    public const ADMIN_HOME = '/admin/dashboard';
 
     /**
      * Define your route model bindings, pattern filters, and other route configuration.
@@ -33,8 +37,23 @@ class RouteServiceProvider extends ServiceProvider
                 ->prefix('api')
                 ->group(base_path('routes/api.php'));
 
-            Route::middleware('web')
+            // 通常（ユーザ）用のルーティング設定
+            Route::prefix('/')
+                ->as('user.')
+                ->middleware('web')
                 ->group(base_path('routes/web.php'));
+
+            // オーナー用ルーティング設定
+            Route::prefix('owner')
+            ->as('owner.')
+            ->middleware('web')
+            ->group(base_path('routes/owner.php'));
+
+            // 管理者用ルーティング設定
+            Route::prefix('admin')
+                ->as('admin.')
+                ->middleware('web')
+                ->group(base_path('routes/admin.php'));
         });
     }
 
