@@ -13,7 +13,7 @@ class RedirectIfAuthenticated
     // それぞれのガードのプロパティを設定
     private const GUARD_USER = 'users';
     private const GUARD_OWNER = 'owners';
-    private const GUARD_ADMIN = 'admins';
+    private const GUARD_ADMIN = 'admin';
 
     /**
      * Handle an incoming request.
