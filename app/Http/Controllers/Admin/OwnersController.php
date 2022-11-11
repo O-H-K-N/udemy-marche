@@ -57,7 +57,10 @@ class OwnersController extends Controller
             'password' => Hash::make($request->password),
         ]);
 
-        return redirect()->route('admin.owners.index');
+        // withでセッションメッセージ設定
+        return redirect()
+        ->route('admin.owners.index')
+        ->with('message', 'オーナーを登録しました');
     }
 
     /**
