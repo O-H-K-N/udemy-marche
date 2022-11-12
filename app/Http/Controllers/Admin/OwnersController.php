@@ -123,4 +123,18 @@ class OwnersController extends Controller
         ->route('admin.owners.index')
         ->with(['message' => 'オーナー情報を削除しました', 'status' => 'alert']);
     }
+
+    // 期限切れの(ソフトデリートされた)オーナーを取得
+    public function expiredOwnerIndex(){
+        $expiredOwners = Owner::onlyTrashed()->get();
+        return view('admin.expired-owners', compact('expiredOwners'));
+    }
+
+    // ソフトデリートされたオーナーを完全削除
+    public function expiredOwnerDestroy($id){
+        Owner::onlyTrashed()->findOrFail($id)->forceDelete();
+        return redirect()
+        ->route('admin.expired-owners.index')
+        ->with(['message' => 'オーナー情報を完全削除しました', 'status' => 'alert']);
+    }
 }
