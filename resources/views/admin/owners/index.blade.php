@@ -47,6 +47,9 @@
                                       @endforeach
                                   </tbody>
                               </table>
+                              <div class="mt-4">
+                                {{ $owners->links() }}
+                              </div>
                           </div>
                       </div>
                   </section>
