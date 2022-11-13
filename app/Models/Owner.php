@@ -12,6 +12,12 @@ class Owner extends Authenticatable
     // Ownerはソフトデリートとして扱われるようになる
     use HasFactory, SoftDeletes;
 
+    // オーナーが所有している店舗を取得
+    public function shop()
+    {
+        return $this->hasOne(Shop::class);
+    }
+
     /**
      * The attributes that are mass assignable.
      *
