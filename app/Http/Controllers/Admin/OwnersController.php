@@ -5,10 +5,13 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Owner;
+use App\Models\Shop;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use App\Http\Requests\StoreOwnerRequest;
-// 日付ライブラリ
-use Carbon\Carbon;
+use Carbon\Carbon; //=> 日付ライブラリ
+use Throwable; //=> throw 文でスロー可能なあらゆるオブジェクトが実装する基底インターフェイス
 
 class OwnersController extends Controller
 {
@@ -26,7 +29,7 @@ class OwnersController extends Controller
     public function index()
     {
         $owners = Owner::select('id', 'name', 'email', 'created_at')
-        ->paginate(3);
+        ->paginate(10);
 
         return view('admin.owners.index', compact('owners'));
 
@@ -50,13 +53,31 @@ class OwnersController extends Controller
      */
     public function store(StoreOwnerRequest $request)
     {
-        // フォームの内容を$requestに格納
 
-        Owner::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-        ]);
+        // 例外処理
+        try{
+            // トランザクション
+            DB::transaction(function () use($request) {
+                // オーナーの作成
+                $owner = Owner::create([
+                    'name' => $request->name,
+                    'email' => $request->email,
+                    'password' => Hash::make($request->password),
+                ]);
+
+                // オーナーに紐づく店舗の作成
+                Shop::create([
+                    'owner_id' => $owner->id,
+                    'name' => '店名を入力してください',
+                    'information' => '',
+                    'filename' => '',
+                    'is_selling' => true,
+                ]);
+            }, 2);
+        }catch(Throwable $e){
+            Log::error($e);
+            throw $e;
+        }
 
         // withでセッションメッセージ設定
         return redirect()

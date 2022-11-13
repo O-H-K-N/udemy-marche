@@ -16,9 +16,9 @@
     <body class="font-sans antialiased">
         <div class="min-h-screen bg-gray-100">
             {{-- ナビゲーションウィンドウの遷移先を条件分岐 --}}
-            @if (request()->is('admin*')
+            @if (request()->is('admin*'))
                 @include('layouts.admin-navigation')
-            @elseif(request()->is('owner*')
+            @elseif(request()->is('owner*'))
                 @include('layouts.owner-navigation')
             @else
                 @include('layouts.user-navigation')
