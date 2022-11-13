@@ -4,10 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+// ソフトデリート処理を読み込み
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Owner extends Authenticatable
 {
-    use HasFactory;
+    // Ownerはソフトデリートとして扱われるようになる
+    use HasFactory, SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
