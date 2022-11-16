@@ -5,7 +5,10 @@ namespace App\Http\Controllers\Owner;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use App\Models\Shop;
+use InterventionImage;
+use App\Http\Requests\UploadImageRequest;
 
 class ShopsController extends Controller
 {
@@ -46,11 +49,31 @@ class ShopsController extends Controller
 
     public function edit($id)
     {
-        dd(Shop::findOrFail($id));
+        $shop = Shop::findOrFail($id);
+
+        return view('owner.shops.edit', compact('shop'));
     }
 
-    public function update(Request $request, $id)
+    public function update(UploadImageRequest $request, $id)
     {
+        // アップロードされた画像を取得
+        $imageFile = $request->image;
+        // null&アップロード判定
+        if (!is_null($imageFile) && $imageFile->isValid() ){
+          // 保存処理(リサイズなしの場合)
+          // Storage::putFile('public/shops', $imageFile);
 
+          // 保存処理(リサイズあり)
+          $fileName = uniqid(rand().'_');
+          $extension = $imageFile->extension();
+          $fileNameToStore = $fileName. '_' . $extension;
+          // リサイズ
+          $resizedImage = InterventionImage::make($imageFile)->resize(1920, 1080)->encode();
+
+          // 画像をフォルダに保存
+          Storage::put('public/shops/' . $fileNameToStore, $resizedImage);
+        }
+
+        return redirect()->route('owner.shops.index');
     }
 }
