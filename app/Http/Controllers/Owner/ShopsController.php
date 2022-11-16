@@ -5,10 +5,9 @@ namespace App\Http\Controllers\Owner;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage;
 use App\Models\Shop;
-use InterventionImage;
 use App\Http\Requests\UploadImageRequest;
+use App\Services\ImageService;
 
 class ShopsController extends Controller
 {
@@ -60,18 +59,8 @@ class ShopsController extends Controller
         $imageFile = $request->image;
         // null&アップロード判定
         if (!is_null($imageFile) && $imageFile->isValid() ){
-          // 保存処理(リサイズなしの場合)
-          // Storage::putFile('public/shops', $imageFile);
-
-          // 保存処理(リサイズあり)
-          $fileName = uniqid(rand().'_');
-          $extension = $imageFile->extension();
-          $fileNameToStore = $fileName. '_' . $extension;
-          // リサイズ
-          $resizedImage = InterventionImage::make($imageFile)->resize(1920, 1080)->encode();
-
-          // 画像をフォルダに保存
-          Storage::put('public/shops/' . $fileNameToStore, $resizedImage);
+          // サービスを読み取り
+          $fileNameToStore = ImageService::upload($imageFile, 'shops');
         }
 
         return redirect()->route('owner.shops.index');
