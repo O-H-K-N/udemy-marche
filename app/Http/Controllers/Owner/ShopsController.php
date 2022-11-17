@@ -55,14 +55,24 @@ class ShopsController extends Controller
 
     public function update(UploadImageRequest $request, $id)
     {
-        // アップロードされた画像を取得
-        $imageFile = $request->image;
-        // null&アップロード判定
-        if (!is_null($imageFile) && $imageFile->isValid() ){
-          // サービスを読み取り
+      $imageFile = $request->image;
+      if(!is_null($imageFile) && $imageFile->isValid() ){
           $fileNameToStore = ImageService::upload($imageFile, 'shops');
-        }
+      }
 
-        return redirect()->route('owner.shops.index');
+      $shop = Shop::findOrFail($id);
+      $shop->name = $request->name;
+      $shop->information = $request->information;
+      $shop->is_selling = $request->is_selling;
+      if(!is_null($imageFile) && $imageFile->isValid()){
+          $shop->filename = $fileNameToStore;
+      }
+
+      $shop->save();
+
+      return redirect()
+      ->route('owner.shops.index')
+      ->with(['message' => '店舗情報を更新しました。',
+      'status' => 'info']);
     }
 }

@@ -24,6 +24,9 @@ class UploadImageRequest extends FormRequest
     public function rules()
     {
         return [
+            'name' => ['required', 'string', 'max:50'],
+            'information' => ['required', 'string', 'max:1000'],
+            'is_selling' => ['required'],
             // 拡張子、byteを指定
             'image' => 'image|mimes:jpg, jpeg, png|max:2048',
         ];
