@@ -18,6 +18,12 @@ class Owner extends Authenticatable
         return $this->hasOne(Shop::class);
     }
 
+    // オーナーが所有している画像を取得
+    public function image()
+    {
+        return $this->hasMany(Image::class);
+    }
+
     /**
      * The attributes that are mass assignable.
      *

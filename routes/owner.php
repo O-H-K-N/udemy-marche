@@ -41,7 +41,7 @@ Route::prefix('shops')
 
 // オーナーごとの画像を管理
 Route::resource('images', ImagesController::class)
-->middleware('auth:admin')
+->middleware('auth:owners')
 ->except(['show']);
 
 Route::get('/dashboard', function () {
