@@ -9,6 +9,7 @@ use App\Http\Controllers\Owner\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Owner\Auth\RegisteredUserController;
 use App\Http\Controllers\Owner\Auth\VerifyEmailController;
 use App\Http\Controllers\Owner\ShopsController;
+use App\Http\Controllers\Owner\ImagesController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -26,6 +27,7 @@ Route::get('/', function () {
     return view('owner.welcome');
 });
 
+// オーナーごとの店舗情報を管理
 Route::prefix('shops')
 ->middleware('auth:owners')
 ->group(function(){
@@ -36,6 +38,11 @@ Route::prefix('shops')
   Route::post('update/{shop}', [ShopsController::class, 'update'])
   ->name('shops.update');
 });
+
+// オーナーごとの画像を管理
+Route::resource('images', ImagesController::class)
+->middleware('auth:admin')
+->except(['show']);
 
 Route::get('/dashboard', function () {
     return view('owner.dashboard');
