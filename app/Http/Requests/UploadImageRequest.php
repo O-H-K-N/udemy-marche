@@ -29,6 +29,8 @@ class UploadImageRequest extends FormRequest
             'is_selling' => ['required'],
             // 拡張子、byteを指定
             'image' => 'image|mimes:jpg, jpeg, png|max:2048',
+            // 複数画像登録バリデーション(うまくいっていない)
+            'files.*.image' => 'required|image|mimes:jpg, jpeg, png|max:2048',
         ];
     }
 
