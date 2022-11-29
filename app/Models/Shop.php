@@ -22,4 +22,10 @@ class Shop extends Model
     {
         return $this->belongsTo(Owner::class);
     }
+
+    // 店舗が所有している商品を取得
+    public function product()
+    {
+        return $this->hasMany(Product::class);
+    }
 }

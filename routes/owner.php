@@ -10,6 +10,7 @@ use App\Http\Controllers\Owner\Auth\RegisteredUserController;
 use App\Http\Controllers\Owner\Auth\VerifyEmailController;
 use App\Http\Controllers\Owner\ShopsController;
 use App\Http\Controllers\Owner\ImagesController;
+use App\Http\Controllers\Owner\ProductsController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -41,6 +42,11 @@ Route::prefix('shops')
 
 // オーナーごとの画像を管理
 Route::resource('images', ImagesController::class)
+->middleware('auth:owners')
+->except(['show']);
+
+// オーナーごとの商品を管理
+Route::resource('products', ProductsController::class)
 ->middleware('auth:owners')
 ->except(['show']);
 
