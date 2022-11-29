@@ -27,4 +27,9 @@ class Product extends Model
         return $this->belongsTo(Image::class, 'image1', 'id');
     }
 
+    // 商品の在庫・履歴を取得
+    public function stock()
+    {
+        return $this->hasMany(Stock::class);
+    }
 }
