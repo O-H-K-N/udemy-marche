@@ -81,12 +81,14 @@
                         </div>
                       </div>
 
-                      {{-- ファイル選択のコンポーネント --}}
-                      <x-select-image :images="$images" name="image1" />
-                      <x-select-image :images="$images" name="image2" />
-                      <x-select-image :images="$images" name="image3" />
-                      <x-select-image :images="$images" name="image4" />
-                      <x-select-image :images="$images" name="image5" />
+                      <div class="p-2 w-2/3 mx-auto">
+                        {{-- ファイル選択のコンポーネント --}}
+                        <x-select-image :images="$images" name="image1" />
+                        <x-select-image :images="$images" name="image2" />
+                        <x-select-image :images="$images" name="image3" />
+                        <x-select-image :images="$images" name="image4" />
+                        <x-select-image :images="$images" name="image5" />
+                      </div>
 
                       {{-- 販売状況 --}}
                       <div class="p-2 w-2/3 mx-auto">

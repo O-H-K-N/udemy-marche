@@ -9,6 +9,20 @@ class Product extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+      'shop_id',
+      'name',
+      'information',
+      'price',
+      'is_selling',
+      'sort_order',
+      'secondary_category_id',
+      'image1',
+      'image2',
+      'image3',
+      'image4'
+    ];
+
     // 商品を所有している店舗を取得
     public function shop()
     {
