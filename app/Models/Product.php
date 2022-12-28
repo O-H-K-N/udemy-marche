@@ -41,6 +41,24 @@ class Product extends Model
         return $this->belongsTo(Image::class, 'image1', 'id');
     }
 
+    // 商品の二枚目の画像を取得
+    public function imageSecond()
+    {
+        return $this->belongsTo(Image::class, 'image2', 'id');
+    }
+
+    // 商品の三枚目の画像を取得
+    public function imageThird()
+    {
+        return $this->belongsTo(Image::class, 'image3', 'id');
+    }
+
+    // 商品の四枚目の画像を取得
+    public function imageFourth()
+    {
+        return $this->belongsTo(Image::class, 'image4', 'id');
+    }
+
     // 商品の在庫・履歴を取得
     public function stock()
     {

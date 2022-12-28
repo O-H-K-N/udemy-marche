@@ -15,7 +15,7 @@ use App\Models\Shop;
 use App\Models\PrimaryCategory;
 use App\Models\Owner;
 use App\Http\Requests\StoreProductRequest;
-
+use GuzzleHttp\Handler\Proxy;
 
 class ProductsController extends Controller
 {
@@ -110,14 +110,23 @@ class ProductsController extends Controller
         ->with(['message' => '商品登録しました', 'status' => 'info']);
     }
 
-    public function show($id)
-    {
-        //
-    }
-
     public function edit($id)
     {
-        //
+        $product = Product::findOrFail($id);
+        $quantity = Stock::where('product_id', $product->id)->sum('quantity');
+
+        $shops = Shop::where('owner_id', Auth::id())
+                ->select('id', 'name')
+                ->get();
+
+        $images = Image::where('owner_id', Auth::id())
+                  ->select('id', 'title', 'filename')
+                  ->orderBy('updated_at', 'desc')
+                  ->get();
+
+        $categories = PrimaryCategory::with('secondary')->get();
+
+        return view('owner.products.edit', compact('product', 'quantity', 'shops', 'images', 'categories'));
     }
 
     public function update(Request $request, $id)
