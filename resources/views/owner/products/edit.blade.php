@@ -60,10 +60,10 @@
                       <div class="p-2 w-2/3 mx-auto">
                         <div class="relative flex justify-around">
                           <div>
-                            <input type="radio" name="type" value="1" class="mr-2" checked>追加
+                            <input type="radio" name="type" value="{{ \Constant::PRODUCT_LIST['add'] }}" class="mr-2" checked>追加
                           </div>
                           <div>
-                            <input type="radio" name="type" value="2" class="mr-2">削減
+                            <input type="radio" name="type" value="{{ \Constant::PRODUCT_LIST['reduce'] }}" class="mr-2">削減
                           </div>
                           <x-input-error :messages="$errors->get('type')" class="mt-2" />
                         </div>
