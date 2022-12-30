@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Owner;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -14,8 +13,7 @@ use App\Models\Stock;
 use App\Models\Shop;
 use App\Models\PrimaryCategory;
 use App\Models\Owner;
-use App\Http\Requests\StoreProductRequest;
-use GuzzleHttp\Handler\Proxy;
+use App\Http\Requests\ProductRequest;
 
 class ProductsController extends Controller
 {
@@ -70,11 +68,11 @@ class ProductsController extends Controller
         return view('owner.products.create', compact('shops', 'images', 'categories'));
     }
 
-    public function store(StoreProductRequest $request)
+    public function store(ProductRequest $request)
     {
         // 例外処理
         try{
-            // トランザクション
+            // 商品と在校を同時登録するためトランザクション
             DB::transaction(function () use($request) {
                 // 商品の作成
                 $product = Product::create([
@@ -129,9 +127,62 @@ class ProductsController extends Controller
         return view('owner.products.edit', compact('product', 'quantity', 'shops', 'images', 'categories'));
     }
 
-    public function update(Request $request, $id)
+    public function update(ProductRequest $request, $id)
     {
-        //
+        $request->validate([
+          'current_quantity' => ['required', 'integer']
+        ]);
+
+        $product = Product::findOrFail($id);
+        $quantity = Stock::where('product_id', $product->id)->sum('quantity');
+
+        // 商品情報更新中に在校が変更された時の処理
+        if ($request->current_quantity != $quantity) {
+          $id = $request->route()->parameter('product');
+          return redirect()->route('owner.products.edit', [ 'product' => $id ])
+          ->with(['message' => '在庫数が変更されています', 'status' => 'alert']);
+        } else {
+          // 例外処理
+          try{
+            // 商品と在校を同時更新するためトランザクション
+            DB::transaction(function () use($request, $product) {
+                $product->name = $request->name;
+                $product->information = $request->information;
+                $product->price = $request->price;
+                $product->sort_order = $request->sort_order;
+                $product->shop_id = $request->shop_id;
+                $product->secondary_category_id = $request->category;
+                $product->image1 = $request->images1;
+                $product->image2 = $request->images2;
+                $product->image3 = $request->images3;
+                $product->image4 = $request->images4;
+                $product->is_selling = $request->is_selling;
+                $product->save();
+
+              // 在庫の追加or削除を判定
+              if ($request->type === '1') {
+                $newQuantity = $request->quantity;
+              }
+              if ($request->type === '2') {
+                $newQuantity = $request->quantity * -1;
+              }
+              Stock::create([
+                  'product_id' => $product->id,
+                  'type' => 1,
+                  'quantity' => $newQuantity,
+              ]);
+            }, 2);
+          }catch(Throwable $e){
+              Log::error($e);
+              throw $e;
+          }
+        }
+
+        // withでセッションメッセージ設定
+        return redirect()
+        ->route('owner.products.index')
+        ->with(['message' => '商品情報を更新しました', 'status' => 'info']);
+
     }
 
     public function destroy($id)
