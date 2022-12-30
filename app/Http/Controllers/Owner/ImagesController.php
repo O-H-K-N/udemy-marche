@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Image;
-use App\Http\Requests\UploadImageRequest;
+use App\Models\Product;
 use App\Services\ImageService;
 
 class ImagesController extends Controller
@@ -104,6 +104,35 @@ class ImagesController extends Controller
 
         // Storageにある画像ファイルのパスを取得
         $filePath = 'public/products/' . $image->filename;
+
+        // 削除する画像が使われている商品を取得
+        $imageInProducts = Product::where('image1', $image->id)
+        ->orWhere('image2', $image->$id)
+        ->orWhere('image3', $image->$id)
+        ->orWhere('image4', $image->$id)
+        ->get();
+
+        // 削除する画像が使われてる商品の画像カラムをnullにする
+        if ($imageInProducts) {
+          $imageInProducts->each(function($product) use($image) {
+            if($product->image1 === $image->id) {
+              $product->image1 = null;
+              $product->save();
+            }
+            if($product->image2 === $image->id) {
+              $product->image2 = null;
+              $product->save();
+            }
+            if($product->image3 === $image->id) {
+              $product->image3 = null;
+              $product->save();
+            }
+            if($product->image4 === $image->id) {
+              $product->image4 = null;
+              $product->save();
+            }
+          });
+        }
 
         // パスを指定して削除
         if(Storage::exists($filePath)) {
