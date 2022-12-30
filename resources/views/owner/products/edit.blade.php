@@ -155,10 +155,19 @@
                       </div>
 
                       {{-- button --}}
-                      <div class="flex jutstify-around mt-6 p-2 w-full">
+                      <div class="p-2 w-full flex justify-around mt-6">
                         <button type="button" onClick="location.href='{{ route('owner.products.index') }}'" class="text-black bg-gray-200 border-0 py-2 px-8 focus:outline-none hover:bg-gray-300 rounded text-lg">戻る</button>
                         <button type="submit" class="text-white bg-green-500 border-0 py-2 px-8 focus:outline-none hover:bg-green-600 rounded text-lg">更新する</button>
                       </div>
+                    </div>
+                  </form>
+
+                  {{-- 削除 --}}
+                  <form id="delete_{{ $product->id }}" method="post" action="{{ route('owner.products.destroy', ['product' => $product->id]) }}">
+                    @csrf
+                    @method('delete')
+                    <div class="flex justify-around mt-4 w-full">
+                      <a href="#" data-id="{{ $product->id }}" onclick="deletePost(this)" class="text-white bg-red-400 border-0 py-2 px-4 focus:outline-none hover:bg-red-500 rounded">削除</a>
                     </div>
                   </form>
               </div>
@@ -184,5 +193,13 @@
         MicroModal.close(modal);
       }, )
     })
+
+    // 商品の削除
+    function deletePost(e) {
+      'use strict';
+      if (confirm("本当に削除してもいいですか？")) {
+        document.getElementById('delete_' + e.dataset.id).submit();
+      }
+    }
   </script>
 </x-app-layout>
