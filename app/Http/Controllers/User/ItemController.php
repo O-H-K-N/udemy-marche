@@ -9,6 +9,29 @@ use Illuminate\Support\Facades\DB;
 
 class ItemController extends Controller
 {
+  public function __construct()
+  {
+    // 認証チェック
+    $this->middleware('auth:users');
+
+    // // ログイン中のオーナー情報以外を閲覧できないようにする処理
+    // $this->middleware(function ($request, $next) {
+    //     $id = $request->route()->parameter('product');
+
+    //     if (!is_null($id)) {
+    //       $productOwnerId = Product::findOrFail($id)->shop->owner->id;
+    //       // 文字列型から数字型に変換
+    //       $productId = (int)$productOwnerId;
+    //       // ログイン中のowner_idを取得
+    //       if ($productId !== Auth::id()) {
+    //         abort(404);
+    //       }
+    //     }
+
+    //     return $next($request);
+    // });
+  }
+
   public function index()
   {
 
@@ -34,10 +57,17 @@ class ItemController extends Controller
     // where句販売中の商品のみを指定
     ->where('shops.is_selling', true)
     ->where('products.is_selling', true)
-    // 欲しい情報だけを抽出
+    // 欲しい情報だけを抽出p
     ->select('products.id as id', 'products.name as name', 'products.price as price', 'products.sort_order as sort_order', 'products.information', 'secondary_categories.name as category', 'image1.filename as filename')
     ->get();
 
     return view('user.index', compact('products'));
+  }
+
+  public function show($id)
+  {
+    $product = Product::findOrFail($id);
+
+    return view('user.show', compact('product'));
   }
 }
