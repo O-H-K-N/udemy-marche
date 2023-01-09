@@ -12,7 +12,29 @@
                 <div class="md:flex md:justify-around">
                   {{-- サムネイル --}}
                   <div class="md:w-1/2">
-                    <x-thumbnail filename="{{ $product->imageFirst->filename ?? '' }}" type="products" />
+                    <!-- Slider main container -->
+                    <div>
+                      <!-- Additional required wrapper -->
+                      <div class="swiper-wrapper">
+                        <!-- Slides -->
+                        <div class="swiper-slide">
+                          @if ($product->imageFirst->filename !== null)
+                            <img src="{{ asset('storage/products/sample1.jpeg') }}">
+                          @else
+                            <img src="">
+                          @endif
+                        </div>
+                      </div>
+                      <!-- If we need pagination -->
+                      <div class="swiper-pagination"></div>
+
+                      <!-- If we need navigation buttons -->
+                      <div class="swiper-button-prev"></div>
+                      <div class="swiper-button-next"></div>
+
+                      <!-- If we need scrollbar -->
+                      <div class="swiper-scrollbar"></div>
+                    </div>
                   </div>
 
                   {{-- 詳細文 --}}
